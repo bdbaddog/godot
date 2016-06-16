@@ -42,6 +42,10 @@ def build_shader_header( target, source, env ):
 			line=fs.readline()
 
 		fd.write(";\n")
+		
+		fd.close()
+		fs.close()
+
 
 	return 0
 
@@ -1095,8 +1099,9 @@ def build_legacygl_header( filename, include, class_suffix, output_attribs ):
 
 	fd.write("};\n\n");
 	fd.write("#endif\n\n");
-	fd.close();
 
+	fd.close();
+	windows_sleep()
 
 def build_legacygl_headers( target, source, env ):
 
@@ -1133,6 +1138,8 @@ def update_version():
 	f.write("#define VERSION_STATUS "+str(version.status)+"\n")
 	import datetime
 	f.write("#define VERSION_YEAR "+str(datetime.datetime.now().year)+"\n")
+	
+	f.close()
 
 def parse_cg_file(fname, uniforms, sizes, conditionals):
 
@@ -1164,6 +1171,9 @@ def parse_cg_file(fname, uniforms, sizes, conditionals):
 				conditionals.append(name);
 
 		line = fs.readline();
+	
+	fs.close()
+
 
 
 def build_cg_shader(sname):
@@ -1202,6 +1212,8 @@ def build_cg_shader(sname):
 		fd.write('\t\tVP_%s,\n' % vp_uniforms[i].upper())
 
 	fd.write("\t};\n");
+	fd.close()
+
 
 
 
@@ -1254,6 +1266,8 @@ void unregister_module_types() {
 
 	f=open("modules/register_module_types.cpp","wb")
 	f.write(modules_cpp)
+	f.close()
+
 
 	return module_list
 
@@ -1446,3 +1460,17 @@ def colored(sys,env):
 	env.Append( JARCOMSTR=[java_library_message] )
 	env.Append( JAVACCOMSTR=[java_compile_source_message] )
 
+def windows_sleep(seconds = 2.0, platformArg="windows"):
+	# Parallel (-j) builds for Windows have generated file not
+	# accessible bugs that prevent MSVC cl.exe from accessing
+	# automatically generated files immediately after builders generated
+	# them. I closed the file handles via .close() manually as I was
+	# writing this but it seems to have done nothing to fix the issue
+	# with inaccessible files. Sleeping works. The bugs are most
+	# prominent in SCons 2.5.1
+	if(seconds == -1.0):
+		seconds = 2.0
+	
+	if(platformArg == "windows"):
+		import time
+		time.sleep(seconds);

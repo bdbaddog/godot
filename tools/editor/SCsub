@@ -8,6 +8,7 @@ def make_doc_header(target,source,env):
 	f = open(src,"rb")
 	g = open(dst,"wb")
 	buf = f.read()
+	f.close()
 	decomp_size = len(buf)
 	import zlib
 	buf = zlib.compress(buf)
@@ -23,6 +24,10 @@ def make_doc_header(target,source,env):
 		g.write(str(ord(buf[i]))+",\n")
 	g.write("};\n")
 	g.write("#endif")
+	
+	g.close()
+	import methods
+	methods.windows_sleep(-1.0, env["platform"])
 
 
 
@@ -33,6 +38,7 @@ def make_certs_header(target,source,env):
 	f = open(src,"rb")
 	g = open(dst,"wb")
 	buf = f.read()
+	f.close()
 	decomp_size = len(buf)
 	import zlib
 	buf = zlib.compress(buf)
@@ -48,6 +54,10 @@ def make_certs_header(target,source,env):
 		g.write(str(ord(buf[i]))+",\n")
 	g.write("};\n")
 	g.write("#endif")
+	
+	g.close()
+	import methods
+	methods.windows_sleep(4.0, env["platform"])
 
 
 

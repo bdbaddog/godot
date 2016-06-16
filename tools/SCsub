@@ -59,6 +59,10 @@ def make_translations_header(target,source,env):
 	g.write("};\n")
 
 	g.write("#endif")
+	
+	g.close()
+	import methods
+	methods.windows_sleep(-1.0, env["platform"])
 
 
 def make_fonts_header(target,source,env):
@@ -94,6 +98,11 @@ def make_fonts_header(target,source,env):
 		g.write("};\n")
 	
 	g.write("#endif")
+	
+	g.close()
+	import methods
+	methods.windows_sleep(-1.0, env["platform"])
+
 	
 	
 if (env["tools"]!="no"):
