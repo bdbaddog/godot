@@ -1,4 +1,5 @@
 import os
+import sys
 
 def add_source_files(self, sources, filetype, lib_env = None, shared = False):
 	import glob;
@@ -1107,10 +1108,6 @@ def build_legacygl_headers( target, source, env ):
 
 	return 0
 
-def build_gles2_headers( target, source, env ):
-
-	for x in source:
-		build_legacygl_header(str(x), include="drivers/gles2/shader_gles2.h", class_suffix = "GLES2", output_attribs = True)
 
 def update_version():
 
@@ -1446,3 +1443,37 @@ def colored(sys,env):
 	env.Append( JARCOMSTR=[java_library_message] )
 	env.Append( JAVACCOMSTR=[java_compile_source_message] )
 
+
+# Swap to running as external process. Hopefully avoiding generated file race conditions.
+build_gles2_headers = "%s methods.py build_gles2_headers --file ${SOURCES}"%(sys.executable,)
+# def __build_gles2_headers( target, source, env ):
+
+# 	for x in source:
+# 		build_legacygl_header(str(x), include="drivers/gles2/shader_gles2.h", class_suffix = "GLES2", output_attribs = True)
+
+
+def _build_gles2_headers(input_file):
+	target_file = input_file + ".h"
+	# __build_gles2_headers( target_file, [input_file,], None )
+	build_legacygl_header(input_file, include="drivers/gles2/shader_gles2.h", class_suffix = "GLES2", output_attribs = True)
+
+
+
+
+def _main():
+	import argparse
+	# create the top-level parser
+	parser = argparse.ArgumentParser()
+	# parser.add_argument('--foo', action='store_true', help='foo help')
+	subparsers = parser.add_subparsers(help='sub-command help')
+
+	# create the parser for the "a" command
+	parser_a = subparsers.add_parser('build_gles2_headers', help='Create gles2 headers from template')
+	parser_a.add_argument('--file', help='File template to use')
+	parser_a.set_defaults(func=_build_gles2_headers)
+	args = parser.parse_args()
+	args.func(args.file)
+
+
+if __name__ == "__main__":
+    _main()

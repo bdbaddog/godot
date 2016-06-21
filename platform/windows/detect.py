@@ -90,6 +90,7 @@ import os
 
 import sys
 
+from SCons.Script import *
 
 def is_active():
 	return True
@@ -384,7 +385,7 @@ def configure(env):
 	env.Append( BUILDERS = { 'GLSL120' : env.Builder(action = methods.build_legacygl_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )
 	env.Append( BUILDERS = { 'GLSL' : env.Builder(action = methods.build_glsl_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )
 	env.Append( BUILDERS = { 'HLSL9' : env.Builder(action = methods.build_hlsl_dx9_headers, suffix = 'hlsl.h',src_suffix = '.hlsl') } )
-	env.Append( BUILDERS = { 'GLSL120GLES' : env.Builder(action = methods.build_gles2_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )
+	env.Append( BUILDERS = { 'GLSL120GLES' : Builder(action = methods.build_gles2_headers, suffix = 'glsl.h',src_suffix = '.glsl') } )
 
 def detect_visual_c_compiler_version(tools_env):
         # tools_env is the variable scons uses to call tools that execute tasks, SCons's env['ENV'] that executes tasks...
