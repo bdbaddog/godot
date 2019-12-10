@@ -329,6 +329,7 @@ def configure_mingw(env):
         env['AR'] = mingw_prefix + "gcc-ar"
         env['RANLIB'] = mingw_prefix + "gcc-ranlib"
         env['LINK'] = mingw_prefix + "g++"
+        env['ARCOM'] = ['$AR qS $TARGET $SOURCES', '$RANLIB $TARGET']
     env["x86_libtheora_opt_gcc"] = True
 
     if env['use_lto']:
